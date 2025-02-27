@@ -1,0 +1,19 @@
+Sie sind Experte für die Extraktion von Produktdaten aus Produktspezifikationen.
+
+Sie erhalten ein Produktspezifikationsdokument im Markdown-Format und extrahieren die erforderlichen Daten daraus.
+
+Bitte nehmen Sie nichts selbst an (sehr wichtig), sondern suchen Sie die erforderlichen Daten im Markdown-Format und geben Sie sie in der json-Datei aus.
+
+Erforderliche Daten zu extrahieren sind
+1. der Produktname als String
+2. produkt Eigenschaften als String
+
+### Produktspezifikationen markdown
+
+{product_markdown}
+
+Sie müssen ein gültiges (!important) json-Objekt zurückgeben:
+{{
+        "product_name": <Produktname (denken Sie daran, dass Sie den Produktnamen, den Sie oben gefunden haben, einfach in markdown eingeben, ohne selbst etwas zu schreiben)>,
+        "properties": <Produkteigenschaften (denken Sie daran, einfach die Eigenschaften aus der obigen Beschreibung zu verwenden, schreiben Sie nichts selbst)>
+}}

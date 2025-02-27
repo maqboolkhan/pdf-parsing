@@ -3,9 +3,12 @@ import os
 import sys
 import click
 import pymupdf4llm
+import dotenv
+from openai import OpenAI
 
 from chagos.template_extractor import parse_md_by_template
 
+dotenv.load_dotenv()
 
 def get_pdf_files_by_folder(pdfs_data_dir: str) -> dict[str, list[str]]:
     pdfs_object: dict[str, list[str]] = {}
@@ -37,8 +40,15 @@ def convert_pdf_to_markdown(pdf_path: str, md_path: str, md_image_path: str):
     default="data/output/",
     help="Path where output json file should be generated.",
 )
-def main(input_folder, output_folder) -> int:
+@click.option(
+    "--solution_type",
+    default="template",
+    type=click.Choice(['template', 'llm'])
+)
+def main(input_folder, output_folder, solution_type) -> int:
     extracted_data = []
+    # Regardless of solution type initiate llm client and templates
+
     templates = {
         "uzin": {
             "product_name": {"Header": 2},
@@ -57,22 +67,48 @@ def main(input_folder, output_folder) -> int:
         },
     }
 
+    client = OpenAI(
+        api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+    )
+    with open("data/prompt") as prompt_fp:
+        prompt = prompt_fp.read()
+
     pdf_files_path = get_pdf_files_by_folder(input_folder)
     for pdf_file_folder in pdf_files_path:
         for pdf_file_path in pdf_files_path[pdf_file_folder]:
+            parsed_data = {}
             path_components = pdf_file_path.split("/")
             brand = path_components[2]
             file_name = path_components[-1][:-4]
             md_file_path = f"data/md/{brand}_{file_name}.md"
             convert_pdf_to_markdown(pdf_file_path, md_file_path, "data/md/images")
-            parsed_data = parse_md_by_template(md_file_path, templates[brand])
+
+            if solution_type == "template":
+                parsed_data = parse_md_by_template(md_file_path, templates[brand])
+            if solution_type == "llm":
+                with open(md_file_path) as f:
+                    response = client.chat.completions.create(
+                        model="gpt-4o-mini",
+                        messages=
+                        [
+                            {
+                                "role": "user",
+                                "content": prompt.replace("{product_markdown}", f.read())
+                            }
+                        ],
+                        response_format={"type": "json_object"}
+                    )
+                    parsed_data = json.loads(response.choices[0].message.content)
+                    parsed_data["product_image"] = "" # Let it be
+
             parsed_data["brand"] = brand
             parsed_data[
                 "product_image"
             ] = f"data/md/images/{parsed_data["product_image"]}"
             extracted_data.append(parsed_data)
 
-    with open(f"{output_folder}/output.json", "w") as output_folder_fp:
+    output_filename = "tamplate_based_output" if solution_type == "template_based" else "llm_based_output"
+    with open(f"{output_folder}/{output_filename}.json", "w") as output_folder_fp:
         json.dump(extracted_data, output_folder_fp, indent=2)
     print("Done")
     return 0
