@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "chagos"
+name = "pdf parser"
 version = "0.1.0"
-description = "TheChagos interview task"
+description = "Pdf parser"
 authors = ["Maqbool ur Rahim Khan <maqboolurrahim@gmail.com>"]
 
 [tool.poetry.dependencies]
@@ -25,3 +25,6 @@ priority = "primary"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"

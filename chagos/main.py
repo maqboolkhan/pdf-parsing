@@ -45,27 +45,17 @@ def convert_pdf_to_markdown(pdf_path: str, md_path: str, md_image_path: str):
     default="template",
     type=click.Choice(['template', 'llm'])
 )
-def main(input_folder, output_folder, solution_type) -> int:
+@click.option(
+    "--templates_path",
+    default="data/templates.json",
+    help="Path to JSON file defining templates",
+)
+def main(input_folder, output_folder, solution_type, templates_path) -> int:
     extracted_data = []
-    # Regardless of solution type initiate llm client and templates
 
-    templates = {
-        "uzin": {
-            "product_name": {"Header": 2},
-            "properties": {"Paragraph": 9},
-            "product_image": {"Image_index": [1, 2]},
-        },
-        "conti": {
-            "product_name": {"Header": 1},
-            "properties": {"Paragraph": 1},
-            "product_image": {"Image_index": [1, 1]},
-        },
-        "sto": {
-            "product_name": {"Header": 1},
-            "properties": {"Paragraph": 1},
-            "product_image": {"Image_index": [1, 1]},
-        },
-    }
+    if solution_type == "template":
+        with open(templates_path) as templates_fp:
+            templates = json.load(templates_fp)
 
     client = OpenAI(
         api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
@@ -107,7 +97,7 @@ def main(input_folder, output_folder, solution_type) -> int:
             ] = f"data/md/images/{parsed_data["product_image"]}"
             extracted_data.append(parsed_data)
 
-    output_filename = "tamplate_based_output" if solution_type == "template_based" else "llm_based_output"
+    output_filename = "tamplate_based_output" if solution_type == "template" else "llm_based_output"
     with open(f"{output_folder}/{output_filename}.json", "w") as output_folder_fp:
         json.dump(extracted_data, output_folder_fp, indent=2)
     print("Done")

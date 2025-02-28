@@ -48,10 +48,6 @@ auto-format: ## Automatically formats the code
 unit-test: ## Runs all unit tests
 	poetry run pytest -v -s ./tests/unit
 
-.PHONY: integration-test
-integration-test: ## Runs all integration tests
-	poetry run pytest -v -s ./tests/integration
-
 .PHONY: test
 test: unit-test ## Runs all tests
 
@@ -59,5 +55,9 @@ test: unit-test ## Runs all tests
 check: auto-format lint test ## Runs all code checks and tests
 
 .PHONY: run-template-solution
-run-template-solution: ## Automatically formats the code
-	poetry run python chagos/main.py
+run-template-solution:
+	poetry run python chagos/main.py --solution_type=template
+
+.PHONY: run-llm-solution
+run-llm-solution:
+	poetry run python chagos/main.py --solution_type=llm

@@ -1,0 +1,17 @@
+{
+    "uzin": {
+        "product_name": {"Header": 2},
+        "properties": {"Paragraph": 9},
+        "product_image": {"Image_index": [1, 2]}
+    },
+    "conti": {
+        "product_name": {"Header": 1},
+        "properties": {"Paragraph": 1},
+        "product_image": {"Image_index": [1, 1]}
+    },
+    "sto": {
+        "product_name": {"Header": 1},
+        "properties": {"Paragraph": 1},
+        "product_image": {"Image_index": [1, 1]}
+    }
+}
