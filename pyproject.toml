@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pdf parser"
+name = "chagos"
 version = "0.1.0"
 description = "Pdf parser"
 authors = ["Maqbool ur Rahim Khan <maqboolurrahim@gmail.com>"]
