@@ -32,7 +32,7 @@ section for pdf files of `sto` brand.
 
 ### LLM based solution
 LLM based solution is expensive, little bit slow and not 100% reliable (due to Hallucination). However, here we dont have to write any templates hence it can scale infinitely theoretically!
-It works flawlessly and was able to extract data with high accuracy. We tested it with Chatgpt's `gpt-40-mini`.
+It works flawlessly and was able to extract data with high accuracy. We tested it with Chatgpt's `gpt-4o-mini`.
 
 ### What could be done more?
 Alot, I did not write tests for LLM based solution. This solution can easily be **scaled and parallelized** using tools like Apache Airflow.
@@ -50,6 +50,8 @@ make install
 ```
 
 ## Running the project
+
+This project uses ChatGPT `gpt-4o-mini` hence requires API key. Please rename `.env.copy` to `.env` and put OpenAI API key.
 
 ```bash
 make run-template-solution
